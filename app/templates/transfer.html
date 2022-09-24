@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Вывод на карту" %}{% endblock %}
+
+{% block body %}
+    <form method="post" action={% url 'transfer' %}>
+     {% csrf_token %}
+    <input name="summa">
+    <input hidden name="token" value="{{ token }}">
+    <button class="btn">{% trans "вывести деньги" %}</button>
+    </form>
+{% endblock %}

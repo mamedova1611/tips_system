@@ -1,0 +1,7 @@
+{% load i18n %}
+чеееееееееек {{ receipt }}
+<form method="post">
+     {% csrf_token %}
+    <input hidden name="token" value="{{ token }}">
+    <button class="btn"><a href="{% url 'receipt-pdf' receipt.id %}">{% trans "скачать чек" %}</a></button>
+</form>

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% load static %}
+{#{% block css %}<link href="{% static 'css/login.css' %}" rel="stylesheet">#}
+{#{% endblock %}#}
+
+
+
+{% load i18n %}
+{% block title %}{% trans "Логин" %}{% endblock %}
+
+{% block body %}
+    <form method="post">
+      <h2>{% trans "Войти в личный кабинет" %}</h2>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">{% trans "Войти" %}</button>
+   </form>
+{% endblock %}

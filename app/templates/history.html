@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "История" %}{% endblock %}
+
+{% block body %}
+    {{ history }}
+    {{ token }}
+{#<form method="POST">#}
+{# {% csrf_token %}#}
+{#    <input hidden name="token" value="{{ token }}">#}
+{#    <button class="btn"><a href="{% url 'receipt' history.id %}">{% trans "чек" %}</a></button>#}
+{#</form>#}
+
+{% endblock %}

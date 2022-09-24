@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "создание оплаты" %}{% endblock %}
+{% block body %}
+    <form method="post" action="{% url 'form-pay' %}">
+     {% csrf_token %}
+    <input hidden name="token" value="{{ token }}">
+    <input hidden name="service_name" value="{{ service_name }}">
+    <input name="summa">
+    <button class="btn">{% trans "оплатить" %}</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+{#    <link href="../static/normalize.css" rel="stylesheet">#}
+{#    <link href="{% static 'css/style.css' %}" rel="stylesheet">#}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+{#<header class="header">#}
+{#<div class="container">#}
+{#<nav class="nav flex">#}
+{#<ul class="nav-list list-reset flex">#}
+{#    <li class="nav-link"><a class="nav-a" href="">{% trans "Главная" %}</a></li>#}
+{#    <li class="nav-link"><a class="nav-a" href="">{% trans "" %}</a></li>#}
+{#    {% if user.is_authenticated %}#}
+{#        <li class="nav-link"><a class="nav-a" href="{% url '' %}">{% trans "Профиль" %}</a></li>#}
+{#        <li class="nav-link"><a class="nav-a" href="">{% trans "Выйти" %}</a></li>#}
+{#    {% else %}#}
+{#        <li class="nav-link"><a class="nav-a" href="{% url 'login' %}">{% trans "Войти" %}</a></li>#}
+{#        <li class="nav-link"><a class="nav-a" href="{% url 'register'%}">{% trans "Зарегистрироваться" %}</a></li>#}
+{#    {% endif %}#}
+{#    <li class="nav-link"><form action="{% url 'set_language' %}" method="post">{% csrf_token %}#}
+{#    <input name="next" type="hidden" value="{{ redirect_to }}">#}
+{#        <label>#}
+{#            <select name="language">#}
+{#                {% get_current_language as LANGUAGE_CODE %}#}
+{#                {% get_available_languages as LANGUAGES %}#}
+{#                {% get_language_info_list for LANGUAGES as languages %}#}
+{#                {% for language in languages %}#}
+{#                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>#}
+{#                        {{ language.name_local }} ({{ language.code }})#}
+{#                    </option>#}
+{#                {% endfor %}#}
+{#            </select>#}
+{#        </label>#}
+{#        <input type="submit" value="Go">#}
+{#</form></li>#}
+{#</ul>#}
+{#</nav>#}
+{#</div>#}
+{#</header>#}
+<main class="main">
+<div class="container">
+    {% block body %}
+    {% endblock %}
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% load i18n %}
+
+{% block body %}
+    <h2>{% trans "Введите номер телефона" %}</h2>
+    {{ service_name }}
+    <form method="post" action="{% url 'pseudo_auth' %}">
+     {% csrf_token %}
+        <input name="login">
+        <input hidden name="service_name" value="{{ service_name }}">
+        <button class="btn" type="submit"><a href="{% url 'form-pay' %}"></a>{% trans "Далее" %}</button>
+   </form>
+{% endblock %}

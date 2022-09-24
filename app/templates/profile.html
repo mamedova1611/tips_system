@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Профиль" %}{% endblock %}
+
+{% block body %}
+    {{ status }}
+    <h3>{% trans "ТЕЛЕФОН" %} - {{ data.login }}</h3>
+    <h3>{% trans "ПОЧТА" %} - {{ data.email }}</h3>
+    <h3>{% trans "БАЛАНС" %} - {{ balance }}</h3>
+<form method="POST" action="{% url 'donate' %}">
+    {% csrf_token %}
+    <input hidden name="token" value="{{ data.token }}">
+    <button class="btn">{% trans "Создать услугу(чаевые) и сгенерировать QR" %}</button>
+</form>
+<form method="GET" action="{% url 'history' %}">
+    {% csrf_token %}
+    <input hidden name="token" value="{{ data.token }}">
+    <button class="btn">{% trans "История" %}</button>
+</form>
+{% if status == 1 or status == 2 %}
+    <form method="post" action="{% url 'token-tranfer' %}">
+     {% csrf_token %}
+        <input hidden name="token" value="{{ data.token }}">
+        <button class="btn">{% trans "Вывод средств" %}</button>
+    </form>
+{% else %}
+<button class="btn"><a href="https://www.wooppay.com/news/article/name/id">{% trans "Вывод средств" %}</a></button>
+    и тут еще должна быть генерация анкеты для идентификации
+{% endif %}
+
+
+{#    <br>#}
+{#    <br>#}
+{#    <form action={% url 'balance_edit' user.id %}>#}
+{#        <button class="btn">{% trans "Пополнить баланс" %}</button>#}
+{#    </form>#}
+{% endblock %}

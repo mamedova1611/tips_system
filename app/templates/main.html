@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Главная" %}{% endblock %}
+{% block body %}
+<button><a href="{% url 'register' %}">Регистрация</a></button>
+<button><a href="{% url 'login' %}">Вход</a></button>
+<button><a href="{% url 'qr' %}">оставить чаевые</a></button>
+{% endblock %}

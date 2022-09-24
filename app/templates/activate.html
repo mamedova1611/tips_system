@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Активация" %}{% endblock %}
+
+{% block body %}
+    <form method="post">
+      <h1>{% trans "Активация" %}</h1>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">{% trans "Подтвердить регистрацию" %}</button>
+   </form>
+    {{ error }}
+{% endblock %}

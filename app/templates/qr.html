@@ -1,0 +1,11 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "История" %}{% endblock %}
+
+{% block body %}
+    здесь будет qr
+и кнопка создание визитки
+    <img src="{% static qr %}">
+{% endblock %}
