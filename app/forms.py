@@ -14,3 +14,12 @@ class ActivateForm(forms.Form):
     login = forms.CharField(help_text='Логин(номер)')
     activation_code = forms.IntegerField(help_text='КОД из смс-сообщения')
     password = forms.CharField(widget=forms.PasswordInput)
+
+class ProfileForm(forms.Form):
+    login = forms.CharField(help_text='Логин(номер)')
+    fio = forms.CharField(max_length=50, help_text="ФИО")
+    city = forms.CharField(max_length=30, help_text='город')
+    job = forms.CharField(max_length=30, help_text='должность')
+    foto = forms.ImageField(help_text='изображение')
+    activation_code = forms.IntegerField(help_text='КОД из смс-сообщения')
+    password = forms.CharField(widget=forms.PasswordInput)

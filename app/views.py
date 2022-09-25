@@ -1,12 +1,12 @@
 import json
-import os.path
+import random
 
 import cv2
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from app.forms import RegisterForm, ActivateForm, AuthForm
-
+from app.forms import RegisterForm, AuthForm, ProfileForm
+from app.models import Profile
 import requests
 
 url = 'https://api.yii2-stage.test.wooppay.com'
@@ -30,17 +30,12 @@ def register_view(request):
             login = form.cleaned_data.get('login')
             email = form.cleaned_data.get('email')
             data = {'login': login, 'email': email}
-            response = requests.post(url + registation, data=data)
-            response_json = response.json()
-            if response_json is not None:
-                if response.status_code == 201:
-                    return render(request, 'activate.html')
-                else:
-                    form = RegisterForm()
-                    return render(request, 'register.html', {'form': form, 'error': response_json[0]['message']})
+            response = requests.post(url + registation, data=data, headers={'Partner-name': 'tips'})
+            if response.status_code == 201:
+                return render(request, 'activate.html', {'form': ProfileForm()})
             else:
                 form = RegisterForm()
-                return render(request, 'register.html', {'form': form, 'error': 'Попробуйте позже'})
+                return render(request, 'register.html', {'form': form, 'error': 'Возникла ошибка'})
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
@@ -53,35 +48,38 @@ activate = '/v1/registration/set-password'
 
 def activate_view(request):
     if request.method == 'POST':
-        form = ActivateForm(request.POST)
+        form = ProfileForm(request.POST)
         if form.is_valid():
             login = form.cleaned_data.get('login')
+            fio = form.cleaned_data.get('fio')
+            city = form.cleaned_data.get('city')
+            job = form.cleaned_data.get('job')
+            foto = form.cleaned_data.get('foto')
             activate_code = form.cleaned_data.get('activate_code')
             password = form.cleaned_data.get('password')
             data = {'login': login, 'password': password, 'activate_code': activate_code}
             response = requests.post(url + activate, data=data)
             response_json = response.json()
-            if response_json is not None:
-                if response.status_code == 201:
-                    response_auth = request.post(url + auth, data={'login': login, 'password': password})
-                    if response_auth.status_code == '200':
-                        response_balance = requests.get(url + balance,
-                                                        headers={'Authorization': response_json['token']})
-                        response = requests.post(url + id_status, headers={'Authorization': response_json['token']})
-                        status = response.json()['status']
-                        return render(request, 'profile.html',
-                                      {'data': response_json, 'balance': response_balance.json()['active'],
-                                       'status': status})
-                    else:
-                        return render(request, 'login.html')
+            if response.status_code == 201:
+                response_auth = request.post(url + auth, data={'login': login, 'password': password})
+                if response_auth.status_code == '200':
+                    response_balance = requests.get(url + balance,
+                                                    headers={'Authorization': response_json['token']})
+                    balance_user = response_balance.json()['active']
+                    response = requests.post(url + id_status, headers={'Authorization': response_json['token']})
+                    status = response.json()['status']
+                    profile_user = Profile.objects.create(login=login, fio=fio, city=city, job=job,
+                                                          balance=balance_user, foto=foto)
+                    return render(request, 'profile.html',
+                                  {'data': response_json, 'profile': profile_user, 'status': status,
+                                   'balance': response_balance.json()['active']})
                 else:
-                    form = ActivateForm()
-                    return render(request, 'activate.html', {'form': form, 'error': response_json[0]['message']})
+                    return render(request, 'login.html')
             else:
-                form = ActivateForm()
-                return render(request, 'activate.html', {'form': form, 'error': 'Попробуйте позже'})
+                form = ProfileForm()
+                return render(request, 'activate.html', {'form': form, 'error': response_json[0]['message']})
     else:
-        form = ActivateForm()
+        form = ProfileForm()
     return render(request, 'activate.html', {'form': form})
 
 
@@ -107,8 +105,11 @@ def login_view(request):
                 response_status = requests.get(url + id_status, headers={'Authorization': response_json['token'],
                                                                          'Partner-name': 'tips'})
                 status = response_status.json()['status']
+
+                profile_user = Profile.objects.filter(login=login)
                 return render(request, 'profile.html',
-                              {'data': response_json, 'balance': response_balance.json()['active'], 'status': status})
+                              {'data': response_json, 'profile': profile_user, 'status': status,
+                               'balance': response_balance.json()['active']})
             else:
                 form = AuthForm()
                 return render(request, 'login.html', {'form': form, 'error': response_json[0]['message']})
@@ -122,9 +123,13 @@ import qrcode
 
 img_name = 'blank.png'
 donate = '/v1/service/donate'
+num = random.randint(1,500)
+
 def donate_view(request):
     if request.method == 'POST':
         token = request.POST.get('token')
+        user = request.POST.get('user')
+        data_user = request.POST.get('data')
         data = json.dumps({
             "fields": {
                 "amount": "0"
@@ -137,13 +142,15 @@ def donate_view(request):
                                  data=data)
         service_name = response.json()['service_name']
         img = qrcode.make(service_name)
-        img.save('app/static/img/blank%s.png' % token[5:10])
-        return render(request, 'qr.html', {'qr': 'img/blank%s.png' % token[5:10]})
+        img.save('app/static/img/blank%s.png' % num)
+        return render(request, 'qr.html', {'qr': 'img/blank%s.png' % num, 'user': user,'data': data_user})
 
 
 # чтение куара
 transfer_new = '/v1/payment/transfer-new'
 pay_card = '/v1/payment/pay-from-card'
+
+
 def qr_reader(request):
     cam = cv2.VideoCapture(0)  # включаем камеру
     detector = cv2.QRCodeDetector()  # включаем  QRCode detector
@@ -159,6 +166,7 @@ def qr_reader(request):
 """Псевдоавторизация"""
 pseudo_auth = '/v1/auth/pseudo'
 
+
 def pseudo_auth_view(request):
     if request.method == 'POST':
         login = request.POST.get('login')
@@ -167,8 +175,22 @@ def pseudo_auth_view(request):
         token = response.json()['token']
         return render(request, 'form_pay.html', {'token': token, 'service_name': service_name})
 
+
 # создание визитки
-# TODO сделать запись данных официанта и qr на шаблон
+import os
+from PIL import Image, ImageDraw, ImageColor, ImageFont
+
+card_name = os.path.normpath('app/static/img/card.png')
+
+def make_card(request):
+    if request.method == 'POST':
+        qr = request.POST.get('qr')
+        im2 = Image.open(card_name)
+        qr = Image.open('app/static/'+qr)
+        im2.paste(qr,(100,100))
+        im2.save('app/static/img/card%s.png' % num)
+        return render(request, 'card.html',{'card':'img/card%s.png' % num})
+
 
 """История"""
 
@@ -178,7 +200,7 @@ history = '/v1/history'
 def history_view(request):
     token = request.GET.get('token')
     print(token)
-    response = requests.get(url + history, headers={'Content-Type':'application/json','Authorization': token})
+    response = requests.get(url + history, headers={'Content-Type': 'application/json', 'Authorization': token})
     response_json = response.json()
     return render(request, 'history.html', {'history': response_json, 'token': token})
 
@@ -186,9 +208,12 @@ def history_view(request):
 """Вывод чаевых на карту"""
 
 transfer = '/v1/payment/transfer-to-card'
+
+
 def token_view(request):
     token = request.POST.get('token')
-    return render(request, 'transfer.html', {'token':token})
+    return render(request, 'transfer.html', {'token': token})
+
 
 def transfer_view(request):
     token = request.POST.get('token')
@@ -199,7 +224,9 @@ def transfer_view(request):
     print(response.json())
     return HttpResponseRedirect(response.json()['frame_url'])
 
+
 """Оплата"""
+
 
 def form_pay_view(request):
     token = request.POST.get('token')
@@ -216,8 +243,9 @@ def form_pay_view(request):
     operation_id = response.json()['operation']['id']
 
     response_url = requests.post(url + pay_card, headers={'Authorization': token},
-                            data={'operation_id': operation_id})
+                                 data={'operation_id': operation_id})
     return HttpResponseRedirect(response_url.json()['frame_url'])
+
 
 """ЧЕК"""
 
@@ -227,7 +255,8 @@ receipt = '/v1/history/receipt/'
 def receipt_view(request, pk):
     if request.method == 'POST':
         token = request.POST.get('token')
-        response = request.get(url + receipt + str(pk), headers={'Authorization': token})
+        response = request.get(url + receipt + str(pk),
+                               headers={'Content-Type': 'application/json', 'Authorization': token})
         if response.status_code == 200:
             return render(request, 'receipt.html', {'receipt': response.json()})
 
@@ -238,6 +267,3 @@ def receipt_pdf_view(request, pk):
         response = request.get(url + receipt + 'pdf/' + str(pk), headers={'Authorization': token})
         if response.status_code == 200:
             return render(request, 'receipt.html', {'receipt': response.json()})
-
-
-

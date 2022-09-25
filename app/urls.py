@@ -16,6 +16,7 @@ urlpatterns = [
                   path('form_pay/', form_pay_view, name='form-pay'),
                   path('qr/', qr_reader, name='qr'),
                   path('pseudo_auth/', pseudo_auth_view, name='pseudo_auth'),
-                  path('token-transfer/', token_view, name='token-tranfer')
+                  path('token-transfer/', token_view, name='token-tranfer'),
+                  path('make_card/',make_card,name='make_card')
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

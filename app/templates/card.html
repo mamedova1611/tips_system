@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Визитка" %}{% endblock %}
+
+{% block body %}
+
+    <img src="{% static card %}">
+{% endblock %}
