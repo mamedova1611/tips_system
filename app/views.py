@@ -30,7 +30,7 @@ def register_view(request):
             login = form.cleaned_data.get('login')
             email = form.cleaned_data.get('email')
             data = {'login': login, 'email': email}
-            response = requests.post(url + registation, data=data, headers={'Partner-name': 'tips'})
+            response = requests.post(url + registation, data=data)
             if response.status_code == 201:
                 return render(request, 'activate.html', {'form': ProfileForm()})
             else:
@@ -217,10 +217,9 @@ def token_view(request):
 
 def transfer_view(request):
     token = request.POST.get('token')
-    print(token)
     summa = request.POST.get('summa')
     response = requests.post(url + transfer, headers={'Content-Type': 'application/json', 'Authorization': token},
-                             data=json.dumps({'amount': summa, 'mobile_scripts': True}))
+                             data=json.dumps({'amount': str(summa), 'mobile_scripts': True}))
     print(response.json())
     return HttpResponseRedirect(response.json()['frame_url'])
 
@@ -250,16 +249,25 @@ def form_pay_view(request):
 """ЧЕК"""
 
 receipt = '/v1/history/receipt/'
-
+status = '/v1/history/transaction/get-operations-data'
 
 def receipt_view(request, pk):
     if request.method == 'POST':
         token = request.POST.get('token')
-        response = request.get(url + receipt + str(pk),
-                               headers={'Content-Type': 'application/json', 'Authorization': token})
-        if response.status_code == 200:
-            return render(request, 'receipt.html', {'receipt': response.json()})
-
+        id = request.POST.get('id')
+        data = json.dumps({
+          "operation_ids": [
+            id
+          ]
+        })
+        response_status = requests.post(url + status, headers={'Content-Type': 'application/json', 'Authorization': token},data=data )
+        if response_status.json()[0]["status"] == 14:
+            response = requests.get(url + receipt + str(pk),headers={'Content-Type': 'application/json', 'Authorization': token})
+            print(response)
+            if response.status_code == 200:
+                return render(request, 'receipt.html', {'receipt': response.json()})
+        else:
+            return render(request,'receipt.html',{'error':'Статус операции - %s'%response_status.json()[0]["status"]})
 
 def receipt_pdf_view(request, pk):
     if request.method == 'POST':

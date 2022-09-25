@@ -1,14 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
 {% block title %}{% trans "История" %}{% endblock %}
 
 {% block body %}
-    {{ history }}
-    {{ token }}
-{#<form method="POST">#}
-{# {% csrf_token %}#}
-{#    <input hidden name="token" value="{{ token }}">#}
-{#    <button class="btn"><a href="{% url 'receipt' history.id %}">{% trans "чек" %}</a></button>#}
-{#</form>#}
+
+<img class = "cabinet-bg" src = "{% static 'img/profile-bg.png' %}">
+<img class = "cabinet-logo" src = "{% static 'img/round-logo.png' %}">
+
+
+
+
+
+    {% for i in history %}
+
+    <table class="table table-striped" style="position: absolute; left: 50px; width: 70%; font-size: 14px;"> 
+
+        <br>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Дата</th>
+                <th scope="col">ID</th>
+                <th scope="col">Сумма</th>
+                <th scope="col">Чек</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ i.created_at }}</td>
+                <td>{{ i.id }}</td>
+                <td>{{ i.amount }}</td>
+                <td>
+                    <form method="POST" action="{% url 'receipt' i.id %}">
+                    {% csrf_token %}
+                    <input hidden name="token" value="{{ token }}">
+                        <input hidden name="id" value="{{ i.id }}">
+                        <button>{% trans "чек" %}</button>
+                    </form>
+
+                </td> 
+              </tr>
+            </tbody>
+          </table>
+    </table>
+
+
+
+    {% endfor %}
+кнопка - выписка за месяц/квартал/год
 
 {% endblock %}

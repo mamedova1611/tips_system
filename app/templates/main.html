@@ -1,8 +1,124 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
 {% block title %}{% trans "Главная" %}{% endblock %}
 {% block body %}
-<button><a href="{% url 'register' %}">Регистрация</a></button>
-<button><a href="{% url 'login' %}">Вход</a></button>
-<button><a href="{% url 'qr' %}">оставить чаевые</a></button>
+
+<body>
+<nav class="navbar bg-primary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="{% static 'img/wt.png' %}"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Меню</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Главная</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Регистрация</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Авторизация</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Как оставить чаевые?</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Преимущества сервиса</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Внедрение в бизнес</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Контакты</a>
+            </li>
+
+
+            
+          </ul>
+          
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<section class="main-ap">
+
+<img class="main-bg" src = "{% static 'img/bg-main.png' %}">
+<img class="cover-1" src = "{% static 'img/main-cover1.png' %}">
+<img class="cover-2" src = "{% static 'img/main-cover2.png' %}">
+<h4 class = "service" style = "position: absolute; top: 115px; left: -20px;"> Сервис для безналичной оплаты чаевых </h4>
+<a id = "reg" class="btn btn-success" href="{% url 'register' %}" role="button">Регистрация</a>
+    <a style = "position: absolute; left: 60px; top: 205px; width:170px; height: 45px; left: 117px; border-radius: 15px; " class = "btn btn-warning" href="{% url 'login' %}" role="button">Войти</a>
+    <a id = "user" class="btn btn-primary" href="{% url 'qr' %}" role="button">Оставить чаевые</a>
+
+
+    <img style = "position: absolute; left: 150px;" class="logo-main" src = "{% static 'img/round-logo.png' %}">
+
+    <br>
+    <ul class="list4b">
+        <li>Удобство и скорость</li>
+        <li>Оплата одним нажатием</li>
+        <li>Вывод на карту</li>  
+    </ul>
+
+    <img class="cover-3" src = "{% static 'img/main-cover3.png' %}">
+    <h4 class="descript-tips">Как оставить чаевые?</h4>
+    <img class="descr-tips-bg" src = "{% static 'img/bg-main.png' %}">
+    <img class="cover-4" src = "{% static 'img/main-cover4.png' %}">
+    <img class="cover-5" src = "{% static 'img/main-cover5.png' %}">
+
+    <ul class = "list1b">
+        <li>Не нужно скачивать приложение</li>
+        <li >Клиент сканирует QR-код сотрудника</li>
+        <li >Выбирает сумму чаевых и оплачивает в одно нажатие</li>
+        <li>Сотрудник получает чаевые напрямую от клиента</li>
+    </ul>
+
+    <br>
+
+    <img class = "bg-2" src="{% static 'img/main-bg-2.png' %}">
+    <h4 class="second-bg">Преимущества сервиса</h4>
+
+    <div class = "advantages">
+    <div id="first-div" class="container">
+        <p class = "head-div"> Моментальная отправка </p>
+        <p class = "descr-div"> Всё, что вам нужно - это камера и банковская карта </p> 
+    </div>
+    <div id="second-div" class="second-div">
+        <p class = "head-div"> Быстрое подключение </p>
+        <p class = "descr-div"> Сервис не требует скачивания и регистрации клиента,сотрудники создают услугу online</p> 
+    </div>
+    <div id="third-div" class="container">
+        <p class = "head-div"> Дружелюбный интерфейс</p>
+        <p class = "descr-div"> Простая система навигации и активации услуги оплаты</p>  
+
+    </div>
+</div>
+
+  <div class="bg-last">
+    <img class = "brand" src="{% static 'img/main-bg-3.png' %}">
+  
+
+    <h4 class = "brand-head">
+      Легко внедряется в бизнес
+    </h4>
+    <img class = "visit-qr" src="{% static 'img/img-bg-3.png' %}">
+    <img class = "check-qr" src="{% static 'img/img-bg-4.png' %}">
+  </div>
+
+  
+
+
+
+    </section>
+</body>
+</html>
 {% endblock %}

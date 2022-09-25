@@ -1,12 +1,19 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
 {% block title %}{% trans "Вывод на карту" %}{% endblock %}
 
 {% block body %}
-    <form method="post" action={% url 'transfer' %}>
+
+<img class = "cabinet-bg" src = "{% static 'img/profile-bg.png' %}">
+<img class = "cabinet-logo" src = "{% static 'img/round-logo.png' %}">
+
+    <form style = " position: absolute; left: 30px; top: 20%" method="post" action={% url 'transfer' %}>
      {% csrf_token %}
-    <input name="summa">
+    <input class="form-control" type="text" placeholder="Сумма вывода" aria-label="default input example" name="summa">
+    <br>
     <input hidden name="token" value="{{ token }}">
-    <button class="btn">{% trans "вывести деньги" %}</button>
+    <button class="btn btn-primary" style="position: relative; left: 60px">{% trans "Вывести деньги" %}</button>
     </form>
 {% endblock %}

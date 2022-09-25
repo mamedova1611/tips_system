@@ -1,7 +1,50 @@
+{% extends 'base.html' %}
 {% load i18n %}
-чеееееееееек {{ receipt }}
+{% load static %}
+{% block body %}
+<img class = "cabinet-bg" src = "{% static 'img/profile-bg.png' %}">
+<img class = "cabinet-logo" src = "{% static 'img/round-logo.png' %}">
+<br>
+<br>
+
+
+{% if receipt %}
+    <h4>Чек</h4>
+    <table class="table table-striped">
+    <tr>
+        <td>Имя оператора</td>
+        <td>{{ receipt.operator_title }}</td>
+    </tr>
+        <tr>
+        <td>Логин</td>
+        <td>{{ receipt.login }}</td>
+    </tr>
+        <tr>
+        <td>Время проведения платежа</td>
+        <td>{{ receipt.time }}</td>
+    </tr>
+            <tr>
+
+        <td>Сумма платежа</td>
+        <td>{{ receipt.amount }}</td>
+    </tr>
+            <tr>
+        <td>Статус операции</td>
+        <td>{{ receipt.transaction.status }}</td>
+    </tr>
+
+
+
+    </table>
+
 <form method="post">
      {% csrf_token %}
     <input hidden name="token" value="{{ token }}">
-    <button class="btn"><a href="{% url 'receipt-pdf' receipt.id %}">{% trans "скачать чек" %}</a></button>
+    <button class="btn"><a href="">{% trans "Скачать чек" %}</a></button>
 </form>
+{% endif %}
+    {% if error %}
+        <h2>{{ error }}</h2>
+{% endif %}
+
+{% endblock %}

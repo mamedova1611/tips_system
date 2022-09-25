@@ -5,7 +5,18 @@
 {% block title %}{% trans "История" %}{% endblock %}
 
 {% block body %}
-    здесь будет qr
-и кнопка создание визитки
+
+
+<img class = "cabinet-bg" src = "{% static 'img/profile-bg.png' %}">
+<img class = "cabinet-logo" src = "{% static 'img/round-logo.png' %}">
+<br>
+<br>
+
     <img src="{% static qr %}">
+    <br>
+    <form method="POST" action="{% url 'make_card' %}">
+    {% csrf_token %}
+    <input hidden name="qr" value="{{ qr }}">
+    <button class = "btn btn-lg btn-warning"  style = "position: absolute; left: 100px; margin-top: 60px">Распечатать визитку</button>
+    </form>
 {% endblock %}

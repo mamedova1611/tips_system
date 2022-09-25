@@ -1,32 +1,81 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static %}
 {% block title %}{% trans "Профиль" %}{% endblock %}
 
 {% block body %}
-    {{ status }}
-    <h3>{% trans "ТЕЛЕФОН" %} - {{ data.login }}</h3>
-    <h3>{% trans "ПОЧТА" %} - {{ data.email }}</h3>
-    <h3>{% trans "БАЛАНС" %} - {{ balance }}</h3>
+
+
+
+    <img class = "cabinet-bg" src = "{% static 'img/profile-bg.png' %}">
+    <img class = "cabinet-logo" src = "{% static 'img/round-logo.png' %}">
+    <a class = "edit-ic" href= "#"> <img src = "{% static 'img/edit-icon.png'%}"></a>
+
+
+    <div class = "balance-label">
+    <br>
+
+    <br>
+    <p style="color: white;"> {{ status }} <p>
+
+        {% if profile %}
+        <ul class = "balance-info">
+        <img src="{{ profile.foto.url }}">
+        <li>{% trans "Телефон" %} - {{ profile.login }}</li>
+        <li>{% trans "ФИО" %} - {{ profile.fio }}</li>
+        <li>{% trans "Город" %} - {{ profile.city }}</li>
+        <li>{% trans "Должность" %} - {{ profile.job }}</li>
+        <li>{% trans "Баланс" %} - {{ profile.balance }}</li>
+        </ul>
+        {% else %}
+        <img class = "profile-img" src= "{% static 'img/profile-img.png' %}">
+    <ul class = "balance-info"> 
+    <li style = "position: relative; left: -15px;font-weight: 500; font-size: 18px;">{{ data.login }} </li>
+    <li style = "color: #05326a; position: relative; left: -20px;">{{ data.email }} </li>
+    <li style = "color: #05326a; position: relative; left: 20px;">Баланс: {{ balance }} </li>
+    <br>
+    </ul>
+    <br>
+
+    </div>
+
+    {% endif %}
+
+<div class = "form-set">
+    <br>
+    <br>
 <form method="POST" action="{% url 'donate' %}">
     {% csrf_token %}
     <input hidden name="token" value="{{ data.token }}">
-    <button class="btn">{% trans "Создать услугу(чаевые) и сгенерировать QR" %}</button>
+    <input hidden name="user" value="{{ profile }}">
+    <input hidden name="data" value="{{ data }}">
+    <button id = "service" class="btn btn-warning" style= "position: absolute; left: -50px;">{% trans "Создать услугу(чаевые) и сгенерировать QR" %}</button>
 </form>
+
+<br> 
+<br>
+
 <form method="GET" action="{% url 'history' %}">
     {% csrf_token %}
     <input hidden name="token" value="{{ data.token }}">
-    <button class="btn">{% trans "История" %}</button>
+    <button id = "history" class="btn btn-warning">{% trans "История" %}</button>
 </form>
+<br>
+<br>
 {% if status == 1 or status == 2 %}
     <form method="post" action="{% url 'token-tranfer' %}">
      {% csrf_token %}
         <input hidden name="token" value="{{ data.token }}">
-        <button class="btn">{% trans "Вывод средств" %}</button>
+        <button id = "output" class="btn btn-warning">{% trans "Вывод средств" %}</button>
     </form>
+
 {% else %}
 <button class="btn"><a href="https://www.wooppay.com/news/article/name/id">{% trans "Вывод средств" %}</a></button>
-    и тут еще должна быть генерация анкеты для идентификации
 {% endif %}
+
+</div>
+
+
 
 
 {#    <br>#}

@@ -1,12 +1,24 @@
+{% extends 'base.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block body %}
-    <h2>{% trans "Введите номер телефона" %}</h2>
-    {{ service_name }}
+
+<img class = "cabinet-bg" src = "{% static 'img/profile-bg.png' %}">
+<img class = "cabinet-logo" src = "{% static 'img/round-logo.png' %}">
+
+
+<div class = "pseudo-auth" style = " position: absolute; top: 150px; left: 60px">
+   <h2>{% trans "Введите номер телефона" %}</h2>
+   <br>
+    <span style = "color: #A3A1A1"> {{ service_name }} </span>
     <form method="post" action="{% url 'pseudo_auth' %}">
      {% csrf_token %}
-        <input name="login">
-        <input hidden name="service_name" value="{{ service_name }}">
-        <button class="btn" type="submit"><a href="{% url 'form-pay' %}"></a>{% trans "Далее" %}</button>
+        <input class="form-control" type="text"  aria-label="default input example" name="login">
+        <input class="form-control" type="text"  aria-label="default input example" hidden name="service_name" value="{{ service_name }}">
+        <br>
+        <button class="btn btn-primary" type="submit" style="position: relative; left: 40px;"><a href="{% url 'form-pay' %}"></a>{% trans "Далее" %}</button>
    </form>
+
+</div>
 {% endblock %}
